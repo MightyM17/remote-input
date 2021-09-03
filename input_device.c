@@ -354,7 +354,10 @@ void device_close(struct input_device* device) {
 
 static void commit_event(struct input_device* device,
         struct input_event* event) {
-    gettimeofday(&event->time, NULL);
+    struct timeval now;
+    gettimeofday(&now, NULL);
+    event.input_event_sec = now.tv_sec;
+    event.input_event_usec = now.tv_usec;
     if (write(device->uinput_fd, event, sizeof(struct input_event)) < 0) {
         LOG_ERRNO("error committing event");
     }
